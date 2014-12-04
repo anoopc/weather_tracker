@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WeatherTracker</string>
+    <string name="weather_station_label">Weather Station</string>
+    <string name="default_string">Default</string>
+    <string name="weather_time_label">Time</string>
+    <string name="weather_label">Weather</string>
+    <string name="temperature_label">Temperature</string>
+    <string name="visibility_label">Visibility</string>
+    <string name="pressure_label">Pressure</string>
+    <string name="stations_section_name">STATIONS</string>
+    <string name="splash_section_name">SPLASH</string>
+    <string name="about">About</string>
+    <string name="add_station">Add Station</string>
+    <string name="preferences">Preferences</string>
+    <string name="plus">+</string>
+    <string name="save">SAVE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="add_station_failure">Failure(Unknown Station Code)</string>
+    <string name="add_station_success">Station Successfully added</string>
+</resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ListLabelFontStyle" parent="android:TextAppearance">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:padding">1sp</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Red">
+        <item name="android:textColor">#FF0000</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Red.Large">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Red.Large.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Red.Small">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Blue">
+        <item name="android:textColor">#0000FF</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Blue.Large">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="ListLabelFontStyle.Blue.Small">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+</resources>
