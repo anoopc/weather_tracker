@@ -42,7 +42,7 @@ public class WeatherDataContentProvider extends ContentProvider {
             default:
                 return null;
         }
-        return this.dbHelper.getReadableDatabase().query(
+        Cursor cc = this.dbHelper.getReadableDatabase().query(
                 StationTableDBHelper.StationTable.TABLE_NAME,
                 projection,
                 selection,
@@ -50,6 +50,8 @@ public class WeatherDataContentProvider extends ContentProvider {
                 null,
                 null,
                 sortOrder);
+        cc.setNotificationUri(getContext().getContentResolver(), uri);
+        return cc;
     }
 
     @Override
@@ -76,6 +78,7 @@ public class WeatherDataContentProvider extends ContentProvider {
                 null,
                 values);
         if (rowID != -1) {
+            getContext().getContentResolver().notifyChange(uri, null);
             return Uri.withAppendedPath(uri, Long.toString(rowID));
         }
         return null;
@@ -93,10 +96,12 @@ public class WeatherDataContentProvider extends ContentProvider {
             default:
                 return 0;
         }
-        return this.dbHelper.getWritableDatabase().delete(
+        int result = this.dbHelper.getWritableDatabase().delete(
                 StationTableDBHelper.StationTable.TABLE_NAME,
                 selection,
                 selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return result;
     }
 
     @Override
@@ -111,10 +116,12 @@ public class WeatherDataContentProvider extends ContentProvider {
             default:
                 return 0;
         }
-        return this.dbHelper.getWritableDatabase().update(
+        int result = this.dbHelper.getWritableDatabase().update(
                 StationTableDBHelper.StationTable.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return result;
     }
 }

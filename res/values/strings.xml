@@ -18,4 +18,6 @@
     <string name="cancel">CANCEL</string>
     <string name="add_station_failure">Failure(Unknown Station Code)</string>
     <string name="add_station_success">Station Successfully added</string>
+    <string name="favorite_station">Favorite Station</string>
+    <string name="delete_station">Delete Station</string>
 </resources>

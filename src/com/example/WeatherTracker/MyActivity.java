@@ -2,8 +2,11 @@ package com.example.WeatherTracker;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -76,15 +79,39 @@ public class MyActivity extends Activity{
     }
 
     public void saveWeatherData(HashMap<String, String> weatherDataMap) {
-        long rowID = this.writableDB.insert(
-                StationTableDBHelper.StationTable.TABLE_NAME,
-                null,
+        Uri insertedRowUri = getApplicationContext().getContentResolver().insert(
+                StationTableDBHelper.StationTable.CONTENT_URI,
                 StationTableDBHelper.StationTable.getContentValuesForInsertion(weatherDataMap));
-        Log.d("ANOOPC_INSERT", Long.toString(rowID));
-        if (rowID == -1) {
+        Log.d("ANOOPC_INSERT", "" + insertedRowUri);
+        if (insertedRowUri == null) {
             Log.d("ANOOPC_ERROR", "error occurred during insertion");
-        } else {
+        }
+    }
 
+    public void onFavoriteStation(final long stationRowID) {
+        Cursor cc = MyAppUtility.getStationDataCursor(this, stationRowID);
+        if (cc.moveToFirst()) {
+            String stationCode = cc.getString(cc.getColumnIndex(StationTableDBHelper.StationTable.STATION_CODE));
+            cc.close();
+
+            SharedPreferences.Editor sharedPreferenceEditor = getPreferences(Context.MODE_PRIVATE).edit();
+            sharedPreferenceEditor.putString(MyAppUtility.FAVORITE_STATION_KEY, stationCode);
+            sharedPreferenceEditor.commit();
+            Log.d("ANOOPC", "Favorite Station Saved: " + stationCode);
+        } else {
+            Log.d("ANOOPC_Error", "Favorite Station Save Error:" + Long.toString(stationRowID));
+        }
+    }
+
+    public void onDeleteStation(final long stationRowID) {
+        int deletedRowCount = getApplicationContext().getContentResolver().delete(
+                StationTableDBHelper.StationTable.CONTENT_URI,
+                StationTableDBHelper.StationTable._ID + " = ?",
+                new String[]{Long.toString(stationRowID)});
+        if (deletedRowCount == 1) {
+            Log.d("ANOOPC", "Station Deleted Successfully");
+        } else {
+            Log.d("ANOOPC_Error", "Station Deletion Failed");
         }
     }
 }

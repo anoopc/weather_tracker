@@ -9,9 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -36,7 +35,7 @@ public class StationsSection extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void populateView(View view) {
-        ListView listView = (ListView)view.findViewById(R.id.stations_list);
+        final ListView listView = (ListView)view.findViewById(R.id.stations_list);
         if (listView == null) {
             return;
         }
@@ -45,7 +44,7 @@ public class StationsSection extends Fragment implements LoaderManager.LoaderCal
                     getActivity(),
                     R.layout.station_list_item,
                     null,
-                new String[]{
+                    new String[]{
                         StationTableDBHelper.StationTable.STATION_CODE,
                         StationTableDBHelper.StationTable.STATION_FULL_NAME},
                     new int[]{R.id.item_heading, R.id.item_subheading},
@@ -54,6 +53,37 @@ public class StationsSection extends Fragment implements LoaderManager.LoaderCal
 
         Log.d("ANOOPC", "set Adapter + " + this.stationListCursorAdapter);
         listView.setAdapter(this.stationListCursorAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("ANOOPC_list1", "" + parent + " " + view + " " + Integer.toString(position) + " " + Long.toString(id));
+            }
+        });
+
+        registerForContextMenu(listView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.stations_list) {
+            final long stationRowID = ((AdapterView.AdapterContextMenuInfo)menuInfo).id;
+            menu.add(R.string.favorite_station).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    ((MyActivity)getActivity()).onFavoriteStation(stationRowID);
+                    return true;
+                }
+            });
+
+            menu.add(R.string.delete_station).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    ((MyActivity)getActivity()).onDeleteStation(stationRowID);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override

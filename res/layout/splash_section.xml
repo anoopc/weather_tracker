@@ -45,14 +45,14 @@
                         <TextView
                                 style="@style/ListLabelFontStyle.Blue.Small"
                                 android:text="@string/default_string"
-                                android:id="@+id/visibility_text_label"/>
+                                android:id="@+id/visibility_text_value"/>
                         <TextView
                                 style="@style/ListLabelFontStyle.Red.Large.bold"
                                 android:text="@string/pressure_label"/>
                         <TextView
                                 style="@style/ListLabelFontStyle.Blue.Small"
                                 android:text="@string/default_string"
-                                android:id="@+id/pressure_text_label"/>
+                                android:id="@+id/pressure_text_value"/>
                 </LinearLayout>
         </ScrollView>
 </LinearLayout>
