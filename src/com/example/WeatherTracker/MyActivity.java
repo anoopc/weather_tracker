@@ -1,13 +1,15 @@
 package com.example.WeatherTracker;
 
 import android.app.Activity;
-import android.content.ContentValues;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,8 +21,6 @@ public class MyActivity extends Activity{
 
     private WeatherDataServiceManager weatherDataServiceManager;
 
-    private SQLiteDatabase readableDB;
-    private SQLiteDatabase writableDB;
     /**
      * Called when the activity is first created.
      */
@@ -32,11 +32,20 @@ public class MyActivity extends Activity{
         this.appSectionsManager = new AppSectionsManager();
         this.appSectionsManager.initialize(this);
 
-        DataBaseHelper weatherDataDBHelper = new DataBaseHelper(this);
-        this.readableDB = weatherDataDBHelper.getReadableDatabase();
-        this.writableDB = weatherDataDBHelper.getReadableDatabase();
-
         this.weatherDataServiceManager = new WeatherDataServiceManager(this);
+        setupBackgroundService();
+    }
+
+    private void setupBackgroundService() {
+        long weatherDataUpdateInterval = 20 * 1000 /*milli seconds*/;
+        Intent backgroundServiceStartIntent = new Intent(getApplicationContext(), WeatherDataUpdateBackgroundService.class);
+        PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), 0, backgroundServiceStartIntent, 0);
+        AlarmManager alarmManager = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime(),
+                weatherDataUpdateInterval,
+                alarmIntent);
+        Log.d("ALARM", "SETUP_DONE");
     }
 
     @Override
@@ -78,16 +87,6 @@ public class MyActivity extends Activity{
         this.weatherDataServiceManager.performAddStationAsync(stationCode);
     }
 
-    public void saveWeatherData(HashMap<String, String> weatherDataMap) {
-        Uri insertedRowUri = getApplicationContext().getContentResolver().insert(
-                StationTableDBHelper.StationTable.CONTENT_URI,
-                StationTableDBHelper.StationTable.getContentValuesForInsertion(weatherDataMap));
-        Log.d("ANOOPC_INSERT", "" + insertedRowUri);
-        if (insertedRowUri == null) {
-            Log.d("ANOOPC_ERROR", "error occurred during insertion");
-        }
-    }
-
     public void onFavoriteStation(final long stationRowID) {
         Cursor cc = MyAppUtility.getStationDataCursor(this, stationRowID);
         if (cc.moveToFirst()) {
@@ -97,7 +96,6 @@ public class MyActivity extends Activity{
             SharedPreferences.Editor sharedPreferenceEditor = getPreferences(Context.MODE_PRIVATE).edit();
             sharedPreferenceEditor.putString(MyAppUtility.FAVORITE_STATION_KEY, stationCode);
             sharedPreferenceEditor.commit();
-            Log.d("ANOOPC", "Favorite Station Saved: " + stationCode);
         } else {
             Log.d("ANOOPC_Error", "Favorite Station Save Error:" + Long.toString(stationRowID));
         }
@@ -109,7 +107,7 @@ public class MyActivity extends Activity{
                 StationTableDBHelper.StationTable._ID + " = ?",
                 new String[]{Long.toString(stationRowID)});
         if (deletedRowCount == 1) {
-            Log.d("ANOOPC", "Station Deleted Successfully");
+            Log.d("ANOOPC_OPERATION", "Station Deleted Successfully");
         } else {
             Log.d("ANOOPC_Error", "Station Deletion Failed");
         }

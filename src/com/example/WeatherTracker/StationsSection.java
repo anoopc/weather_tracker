@@ -51,7 +51,6 @@ public class StationsSection extends Fragment implements LoaderManager.LoaderCal
                     0);
         }
 
-        Log.d("ANOOPC", "set Adapter + " + this.stationListCursorAdapter);
         listView.setAdapter(this.stationListCursorAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -90,14 +89,12 @@ public class StationsSection extends Fragment implements LoaderManager.LoaderCal
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(0, null, this);
-        Log.d("ANOOPC", "Why Why Why");
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //ignore id(only one loader being created)
         Uri stationDataURI = StationTableDBHelper.StationTable.CONTENT_URI;
-        Log.d("ANOOPC", "onCreateLoader" + stationDataURI);
         return new CursorLoader(
                 getActivity(),
                 stationDataURI,
@@ -113,13 +110,11 @@ public class StationsSection extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d("ANOOPC", "onLoadFinished");
         this.stationListCursorAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d("ANOOPC", "onLoaderReset");
         this.stationListCursorAdapter.swapCursor(null);
     }
 }

@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 /**
  * Created by anoopc on 12/2/14.
@@ -48,6 +51,19 @@ public class WeatherDataParser implements Runnable {
     }
 
     public HashMap<String, String> parseWeatherDataAsync(InputStream inputStream) {
+        this.inputStream = inputStream;
+        this.weatherDataHashMap = null;
+        try {
+            Executors.newSingleThreadExecutor().submit(this).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return this.weatherDataHashMap;
+    }
+
+    public HashMap<String, String> parseWeatherDataBlocking(InputStream inputStream) {
         this.inputStream = inputStream;
         this.weatherDataHashMap = null;
 

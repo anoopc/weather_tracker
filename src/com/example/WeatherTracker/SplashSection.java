@@ -74,6 +74,5 @@ public class SplashSection extends Fragment {
             String data = stationDataCursor.getString(stationDataCursor.getColumnIndex(stationTableColumnNames[index]));
             textView.setText(data);
         }
-        Log.d("ANOOPC", "POPULATED FAVORITE STATION DATA");
     }
 }

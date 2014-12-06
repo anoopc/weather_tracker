@@ -7,15 +7,32 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.*;
 
 public class HTTPRequestAgent {
+
+    public InputStream downloadURLBlocking(final String myURL) {
+        try {
+            return Executors.newSingleThreadExecutor().submit(new Callable<InputStream>() {
+                @Override
+                public InputStream call() throws Exception {
+                    return HTTPRequestAgent.this.downloadURLHelper(myURL);
+                }
+            }).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void downloadURLAsync(String myURL,
                                  HTTPAgentCallBackHandler callBackHandler) {
         new DownloadWebPageTask(callBackHandler).execute(myURL);
     }
 
-    private InputStream downloadURL(String myURL) throws IOException {
+    private InputStream downloadURLHelper(String myURL) throws IOException {
         InputStream is = null;
         int maxLen = 102400; //100 KB Max Len;
         try {
@@ -49,7 +66,7 @@ public class HTTPRequestAgent {
         @Override
         protected InputStream doInBackground(String... params) {
             try {
-                return downloadURL(params[0]);
+                return downloadURLHelper(params[0]);
             } catch (IOException e) {
                 e.printStackTrace();
             }

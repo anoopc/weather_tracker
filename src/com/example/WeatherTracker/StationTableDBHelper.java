@@ -1,12 +1,8 @@
 package com.example.WeatherTracker;
 
-import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by anoopc on 12/3/14.
@@ -73,27 +69,6 @@ public final class StationTableDBHelper {
             queryString += ")";
             Log.d("ANOOPC_QUERY", "generated Query String:" + queryString);
             return queryString;
-        }
-
-        public static String generateInsertQuery(HashMap<String, String> weatherDataMap) {
-            String queryString = "INSERT INTO " + TABLE_NAME + " VALUES ("
-                    + QUOTE + weatherDataMap.get(ALL_COLUMN_NAMES[0]) + QUOTE;
-            for (int index = 1; index < ALL_COLUMN_NAMES.length; ++index) {
-                queryString += COMMA_SEP + QUOTE + weatherDataMap.get(ALL_COLUMN_NAMES[index]) + QUOTE;
-            }
-            queryString += ")";
-            Log.d("ANOOPC_QUERY", "generated Query String:" + queryString);
-            return queryString;
-        }
-
-        public static ContentValues getContentValuesForInsertion(HashMap<String, String> weatherDataMap) {
-            if (weatherDataMap == null) return  null;
-            ContentValues contentValues = new ContentValues();
-            for (Map.Entry<String, String> entry : weatherDataMap.entrySet()) {
-                contentValues.put(entry.getKey(), entry.getValue());
-            }
-            Log.d("ANOOPC", "contentValues: " + contentValues);
-            return contentValues;
         }
     }
 }

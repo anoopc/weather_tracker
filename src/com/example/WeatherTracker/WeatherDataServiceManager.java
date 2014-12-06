@@ -2,7 +2,6 @@ package com.example.WeatherTracker;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -27,13 +26,16 @@ public class WeatherDataServiceManager {
                 stationCode);
     }
 
+    public HashMap<String, String> fetchWeatherDataBlocking(final String stationCode) {
+        InputStream inputStream = this.httpRequestAgent.downloadURLBlocking(getWeatherUrlForStation(stationCode));
+        return new WeatherDataParser().parseWeatherDataBlocking(inputStream);
+    }
+
     private void fetchWeatherDataAsync(final String stationCode, final WeatherDataFetchCallBackHandler handler) {
         final HTTPAgentCallBackHandler httpHandler = new HTTPAgentCallBackHandler() {
             @Override
-            public void didReceiveResponse(Object responseObject) {
-                InputStream responseXMLInputStream = (InputStream)responseObject;
+            public void didReceiveResponse(InputStream responseXMLInputStream) {
                 HashMap<String, String> weatherDataMap = weatherDataParser.parseWeatherDataAsync(responseXMLInputStream);
-                Log.d("ANOOPC", ((weatherDataMap == null) ? "null" : weatherDataMap.toString()));
                 if (handler != null) {
                     handler.didReceiveWeatherData(weatherDataMap);
                 }
@@ -54,9 +56,9 @@ public class WeatherDataServiceManager {
 
                 if (weatherDataMap == null) {
                     return;
-                } else {
-                    ((MyActivity)activity).saveWeatherData(weatherDataMap);
                 }
+
+                MyAppUtility.saveWeatherData(activity.getApplicationContext(), weatherDataMap);
             }
         });
     }

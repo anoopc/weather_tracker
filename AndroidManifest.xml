@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".WeatherDataUpdateBackgroundService" android:exported="false"/>
+
         <provider android:name="com.example.WeatherTracker.WeatherDataContentProvider"
                   android:authorities="com.example.weather_data_tracker.db.weather_data_provider" />
     </application>
